@@ -8,6 +8,7 @@ package pacpong;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Rectangle;
 
 /**
  *
@@ -15,7 +16,7 @@ import java.awt.Image;
  */
 public class Item {
 
-    public Item(int x, int y, int width, int height, Image image) {
+    public Item(int x, int y, int width, int height, Image image, String type) {
         this.x = x;
         this.y = y;
         
@@ -23,15 +24,16 @@ public class Item {
         this.height = height;
 
         this.image = image;
+        this.type = type;
     }
 
     public void draw(Graphics graphics) {
         graphics.drawImage(image, x, y, width, height, null);
+        graphics.setColor(Color.white);
+        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
 
     //<editor-fold defaultstate="collapsed" desc="Properties">
-    private int radius;
-
     private int x, y, width, height;
     private Image image;
     private String type;
@@ -39,15 +41,8 @@ public class Item {
     /**
      * @return the radius
      */
-    public int getRadius() {
-        return radius;
-    }
-
-    /**
-     * @param radius the radius to set
-     */
-    public void setRadius(int radius) {
-        this.radius = radius;
+    public Rectangle getHitBox() {
+        return new Rectangle (x, y, width, height);
     }
 
     /**

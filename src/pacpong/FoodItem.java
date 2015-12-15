@@ -63,11 +63,11 @@ public class FoodItem extends Item {
             image = ResourceTools.loadImageFromResource("pacpong/coke.png");
         }
 
-        return new FoodItem(x, y, width, height, image);
+        return new FoodItem(x, y, width, height, image, type);
     }
 
-    public FoodItem(int x, int y, int width, int height, Image image) {
-        super(x, y, width, height, image);
+    public FoodItem(int x, int y, int width, int height, Image image, String type) {
+        super(x, y, width, height, image, type);
     }
 
 }

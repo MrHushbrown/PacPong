@@ -54,16 +54,30 @@ class Arena extends Environment {
 
 //        paddleOne = new Paddle(Direction.DOWN);
         playerone = new Pacman(900, 450, 30, 30, MIN_X, MAX_X, MIN_Y, MAX_Y);
-
+//<editor-fold defaultstate="collapsed" desc="items">
+        
         items = new ArrayList<>();
         items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
         items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
         items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
-
+        
         items.add(FoodItem.getFoodItem(420, 250, 50, 50, FoodItem.BEER_FOOD_ITEM));
         items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
         items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
         items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
+        
+        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
+        
+        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
+//</editor-fold>
+
     }
 
     @Override
@@ -76,7 +90,7 @@ class Arena extends Environment {
 
     @Override
     public void timerTaskHandler() {
-//<editor-fold defaultstate="collapsed" desc="move pacman">
+        //<editor-fold defaultstate="collapsed" desc="move pacman">
         if (playerone != null) {
             if (moveDelay >= moveDelayLimit) {
                 moveDelay = moveDelayLimit;
@@ -86,7 +100,8 @@ class Arena extends Environment {
                 moveDelay++;
             }
         }
-//</editor-fold>
+        //</editor-fold>
+        
 //<editor-fold defaultstate="collapsed" desc="Pacman animation">
         if (playerone != null) {
             if (playerone.isDead()) {
@@ -105,6 +120,8 @@ class Arena extends Environment {
             playerone.setMouthWidth(width);
         }
 //</editor-fold>
+        
+        
 //        if (playerone != null) {
 //            playerone.move();
 //        }
