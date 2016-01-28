@@ -17,7 +17,6 @@ import java.util.ArrayList;
  */
 public class Paddle {
 
-
     public Paddle(Direction direction) {
         this.direction = direction;
     }
@@ -25,12 +24,14 @@ public class Paddle {
     private Direction direction = Direction.RIGHT;
     private Color color = Color.BLUE;
 
-    public Paddle(int x, int y, int width, int height, Color color) {
+    public Paddle(int x, int y, int width, int height, Color color, int minY, int maxY) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.color = color;
+        this.minY = minY;
+        this.maxY = maxY;
 
     }
 
@@ -39,7 +40,7 @@ public class Paddle {
         graphics.fill3DRect(x, y, width, height, true);
     }
 
-    int speed = 4;
+    int speed = 12;
 
     public void move() {
         if (getDirection() == Direction.DOWN) {
@@ -47,6 +48,35 @@ public class Paddle {
         } else if (getDirection() == Direction.UP) {
             y -= speed;
         }
+        if (y < minY) {
+            y = minY;
+        }
+        else if (y + height > maxY) {
+            y = maxY - height;
+        }
+    }
+
+    public void stop() {
+        this.speed = 0;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * @param Health the Health to set
+     */
+    public void setHealth(int Health) {
+        this.health = Health;
+    }
+
+    public boolean isAlive() {
+        return (health > 0);
+    }
+
+    public boolean isDead() {
+        return (health <= 0);
     }
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
@@ -54,11 +84,14 @@ public class Paddle {
     private int y;
     private int width;
     private int height;
-    
+    private int health;
+    private int minY;
+    private int maxY;
+
     private Direction getDirection() {
         return direction;
     }
-    
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }

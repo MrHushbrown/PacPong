@@ -3,6 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+//todo
+//fix screen**
+//get paddles moving and respect boundaries**
+//get ball moving
+//        -bounce off paddles using trig class
+//        -collide with pacman to kill him        
+//// "raindrop class" code for items and powerups
+//          -effects of powerups (can be reduced if needed for time)
+//          -nuke ends game
+//game over screen
+//          -restart game
+//          -maybe start and loading screen
+//        
+
+
+
 package pacpong;
 
 import audio.AudioPlayer;
@@ -41,6 +57,13 @@ class Arena extends Environment {
     private static final int MAX_X = 1500;
     private static final int MIN_Y = 150;
     private static final int MAX_Y = 850;
+    
+    private static final int BOUNDARY_TOP = 100;
+    private static final int BOUNDARY_LEFT = 50;
+    private static final int BOUNDARY_HEIGHT = 650;
+    private static final int BOUNDARY_WIDTH = 1450;
+    
+    private static final int PADDLE_REGION_WIDTH = 125;
 
     private Image coin;
 
@@ -48,34 +71,34 @@ class Arena extends Environment {
         this.setBackground(Color.black);
 //        this.setBackground(ResourceTools.loadImageFromResource(TOOL_TIP_TEXT_KEY))
 
-        paddleOne = new Paddle(130, 175, 60, 320, Color.BLUE);
-        paddleTwo = new Paddle(1710, 175, 60, 320, Color.RED);
+        paddleOne = new Paddle(BOUNDARY_LEFT + (PADDLE_REGION_WIDTH / 2), BOUNDARY_HEIGHT / 4, PADDLE_REGION_WIDTH / 4, BOUNDARY_HEIGHT / 8, Color.BLUE, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
+        paddleTwo = new Paddle(BOUNDARY_LEFT +BOUNDARY_WIDTH - (PADDLE_REGION_WIDTH * 3 / 4), BOUNDARY_HEIGHT / 4, PADDLE_REGION_WIDTH / 4, BOUNDARY_HEIGHT / 8, Color.RED, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
         playerone = new Pacman(Direction.RIGHT);
 
 //        paddleOne = new Paddle(Direction.DOWN);
-        playerone = new Pacman(900, 450, 30, 30, MIN_X, MAX_X, MIN_Y, MAX_Y);
+        playerone = new Pacman(BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 30, 30, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
 //<editor-fold defaultstate="collapsed" desc="items">
-        
-        items = new ArrayList<>();
-        items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
-        items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
-        items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
-        
-        items.add(FoodItem.getFoodItem(420, 250, 50, 50, FoodItem.BEER_FOOD_ITEM));
-        items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
-        items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
-        items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
-        
-        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
-        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
-        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
-        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
-        
-        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
-        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
-        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
-        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
-        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
+
+//        items = new ArrayList<>();
+//        items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
+//        items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
+//        items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
+//
+//        items.add(FoodItem.getFoodItem(420, 250, 50, 50, FoodItem.BEER_FOOD_ITEM));
+//        items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
+//        items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
+//        items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
+//
+//        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
+//        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
+//        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
+//        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
+//
+//        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
+//        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
+//        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
+//        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
+//        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
 //</editor-fold>
 
     }
@@ -83,25 +106,50 @@ class Arena extends Environment {
     @Override
     public void initializeEnvironment() {
     }
-
-    int moveDelay = 0;
-    int moveDelayLimit = 0;
+    
+    int moveDelayPlayerOne = 0;
+    int moveDelayPaddle01 = 0;
+    int moveDelayPaddle02 = 0;
+    int moveDelayLimit = 2;
+    
     int counter;
 
     @Override
     public void timerTaskHandler() {
-        //<editor-fold defaultstate="collapsed" desc="move pacman">
+//<editor-fold defaultstate="collapsed" desc="move pacman">
         if (playerone != null) {
-            if (moveDelay >= moveDelayLimit) {
-                moveDelay = moveDelayLimit;
+            if (moveDelayPlayerOne >= moveDelayLimit) {
+                moveDelayPlayerOne = moveDelayLimit;
                 playerone.move();
             } else {
 
-                moveDelay++;
+                moveDelayPlayerOne++;
             }
         }
         //</editor-fold>
-        
+
+//<editor-fold defaultstate="collapsed" desc="move paddleOne">
+        if (paddleOne != null) {
+            if (moveDelayPaddle01 >= moveDelayLimit) {
+                moveDelayPaddle01 = 0;
+                paddleOne.move();
+            } else {
+                moveDelayPaddle01++;
+            }
+        }
+//</editor-fold>
+
+//<editor-fold defaultstate="collapsed" desc="move paddleTwo">
+        if (paddleTwo != null) {
+            if (moveDelayPaddle02 >= moveDelayLimit) {
+                moveDelayPaddle02 = 0;
+                paddleTwo.move();
+            } else {
+                moveDelayPaddle02++;
+            }
+        }
+//</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="Pacman animation">
         if (playerone != null) {
             if (playerone.isDead()) {
@@ -120,15 +168,16 @@ class Arena extends Environment {
             playerone.setMouthWidth(width);
         }
 //</editor-fold>
-        
-        
-//        if (playerone != null) {
-//            playerone.move();
-//        }
-//        
-//        if (playerone.getHitBox(){
-//            
-//        } 
+    }
+
+    private void checkIntersection() {
+        if (items != null) {
+            for (Item item : items) {
+                if (item.getHitBox().intersects(playerone.getHitBox())) {
+
+                }
+            }
+        }
     }
 
     @Override
@@ -155,9 +204,12 @@ class Arena extends Environment {
 //</editor-fold>
         if (e.getKeyCode() == KeyEvent.VK_A) {
             paddleOne.setDirection(Direction.UP);
-        }
-        if (e.getKeyCode() == KeyEvent.VK_Z) {
+        } else if (e.getKeyCode() == KeyEvent.VK_Z) {
             paddleOne.setDirection(Direction.DOWN);
+        } else if (e.getKeyCode() == KeyEvent.VK_K) {
+            paddleTwo.setDirection(Direction.UP);
+        } else if (e.getKeyCode() == KeyEvent.VK_M) {
+            paddleTwo.setDirection(Direction.DOWN);
         }
         //<editor-fold defaultstate="collapsed" desc="Sounds">
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
@@ -198,11 +250,15 @@ class Arena extends Environment {
         if (paddleTwo != null) {
             paddleTwo.draw(graphics);
         }
+        
+        //draw playing surface
+        
+
         graphics.setColor(Color.magenta);
-        graphics.drawRect(50, 150, 1800, 700);
+        graphics.drawRect(BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_WIDTH, BOUNDARY_HEIGHT);
 
         graphics.setColor(Color.yellow);
-        graphics.drawRect(MIN_X, MIN_Y, MAX_X - MIN_X, MAX_Y - MIN_Y);
+        graphics.drawRect(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_WIDTH - (2 * PADDLE_REGION_WIDTH), BOUNDARY_HEIGHT);
 
         if (grid != null) {
             grid.paintComponent(graphics);
@@ -228,10 +284,11 @@ class Arena extends Environment {
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
         graphics.drawString("Score " + scoretwo, 1700, 100);
 //</editor-fold>
+        //<editor-fold defaultstate="collapsed" desc="timer">
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
         graphics.drawString("Time: " + time, 850, 100);
-
+//</editor-fold>
         if (items != null) {
             for (Item item : items) {
                 item.draw(graphics);

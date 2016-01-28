@@ -19,7 +19,7 @@ public class PacPong {
      */
     public static void main(String[] args) {
 //        ApplicationStarter.run("PacPong Run", new Arena());
-        ApplicationStarter.run(new String[0], "PacPong", new Dimension(1920, 1000), new Arena());
+        ApplicationStarter.run(new String[0], "PacPong", new Dimension(1920, 1080), new Arena());
         
         
         

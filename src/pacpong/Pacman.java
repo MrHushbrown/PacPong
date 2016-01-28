@@ -87,11 +87,11 @@ public class Pacman {
                 y -= speed;
             }
 
-            if (x < minX - 4) {
+            if (x < minX) {
                 x = minX;
                 kill();
-            } else if (x > maxX - 27) {
-                x = maxX - 27;
+            } else if (x > maxX - width) {
+                x = maxX - width;
                 kill();}
                 if (y < minY) {
                     y = minY;
