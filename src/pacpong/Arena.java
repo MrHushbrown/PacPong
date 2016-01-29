@@ -9,10 +9,15 @@
 //  change pacman mouth direction**
 //get ball moving
 //        -bounce off paddles using trig class**
-//        -collide with pacman to kill him        
-//// "raindrop class" code for items and powerups
-//          -effects of powerups (can be reduced if needed for time)
-//          -nuke ends game
+//        -collide with pacman to kill him**     
+//        -pacman moves faster moving left and up
+// "raindrop class" code for items and powerups
+//            -how to randomize and trigger powerups,hitbox?
+//            -how to make custom colors
+//            -how to make ice effect on screen
+//            -effects of powerups (can be reduced if needed for time)
+//            -nuke ends game
+//              -randomize angles for ball when bouncing off edges
 //game over/start screen
 //          -restart game
 //          -maybe start and loading screen
@@ -65,8 +70,6 @@ class Arena extends Environment {
 
     private static final int PADDLE_REGION_WIDTH = 125;
 
-    private Image coin;
-
     public Arena() {
         this.setBackground(Color.black);
 //        this.setBackground(ResourceTools.loadImageFromResource(TOOL_TIP_TEXT_KEY))
@@ -78,29 +81,32 @@ class Arena extends Environment {
 //        paddleOne = new Paddle(Direction.DOWN);
         playerone = getPacman();
         ball = new Ball(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 35, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
-//<editor-fold defaultstate="collapsed" desc="items">
 
+       
+
+//<editor-fold defaultstate="collapsed" desc="items">
 //        items = new ArrayList<>();
 //        items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
 //        items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
 //        items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
-//
+//        
 //        items.add(FoodItem.getFoodItem(420, 250, 50, 50, FoodItem.BEER_FOOD_ITEM));
 //        items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
 //        items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
 //        items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
-//
+//        
 //        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
 //        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
 //        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
 //        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
-//
+//        
 //        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
 //        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
 //        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
 //        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
 //        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
 //</editor-fold>
+
     }
 
     private Pacman getPacman() {
@@ -114,7 +120,7 @@ class Arena extends Environment {
     int moveDelayPlayerOne = 0;
     int moveDelayPaddle01 = 0;
     int moveDelayPaddle02 = 0;
-    int moveDelayLimit = 2;
+    int moveDelayLimit = 1;
 
     int counter;
 
@@ -164,7 +170,7 @@ class Arena extends Environment {
                 } else if (width >= 80) {
                     widthChange = -17;
                 }
-                
+
                 width = width + widthChange;
                 playerone.setMouthWidth(width);
             }
@@ -174,34 +180,41 @@ class Arena extends Environment {
 //            playerone.setMouthWidth(width);
 //        }
 //</editor-fold>
-        
+
+//<editor-fold defaultstate="collapsed" desc="ball bounce">
         if (ball != null) {
             ball.move();
-            
+
             if (ball.getHitBox().intersects(paddleOne.getHitBox())) {
                 ball.getVelocity().x *= -1;
                 ball.setX(paddleOne.getRightX());
+                ball.getVelocity().x++;
             }
-            
+
             if (ball.getHitBox().intersects(paddleTwo.getHitBox())) {
                 ball.getVelocity().x *= -1;
                 ball.setX(paddleTwo.getLeftX() - ball.getWidth());
+                ball.getVelocity().x++;
+            }
+
+            if (ball.getX() <= BOUNDARY_LEFT) {
+                scoretwo++;
+                ball.setX(BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH - ball.getWidth());
+                ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
+                ball.setVelocity(new Velocity(-10, -7));
+            } else if (ball.getX() >= BOUNDARY_LEFT + BOUNDARY_WIDTH - ball.getWidth()) {
+                scoreone++;
+                ball.setX(BOUNDARY_LEFT + PADDLE_REGION_WIDTH);
+                ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
+                ball.setVelocity(new Velocity(10, -3));
             }
             
-            if (ball.getX() <= BOUNDARY_LEFT) {
-               scoretwo++;
-               ball.setX(BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH - ball.getWidth());
-               ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
-               ball.setVelocity(new Velocity(-3, -5));
-            } else if (ball.getX() >= BOUNDARY_LEFT + BOUNDARY_WIDTH - ball.getWidth()) {
-               scoreone++;
-               ball.setX(BOUNDARY_LEFT + PADDLE_REGION_WIDTH);
-               ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
-               ball.setVelocity(new Velocity(3, -2));
-            } 
+            if (ball.getHitBox().intersects(playerone.getHitBox())){
+                playerone.kill();
+            }
         }
-        
-        
+
+//</editor-fold>
     }
 
     private void checkIntersection() {
@@ -236,6 +249,7 @@ class Arena extends Environment {
             }
         }
 //</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="paddle controls">
         if (e.getKeyCode() == KeyEvent.VK_A) {
             paddleOne.setDirection(Direction.UP);
         } else if (e.getKeyCode() == KeyEvent.VK_Z) {
@@ -245,17 +259,18 @@ class Arena extends Environment {
         } else if (e.getKeyCode() == KeyEvent.VK_M) {
             paddleTwo.setDirection(Direction.DOWN);
         }
-        //<editor-fold defaultstate="collapsed" desc="Sounds">
-        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            AudioPlayer.play("/pacpong/bomb_siren.wav");
-        }
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="Sounds">
+//        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+//            AudioPlayer.play("/pacpong/bomb_siren.wav");
+//        }
         if (e.getKeyCode() == KeyEvent.VK_T) {
             AudioPlayer.play("/pacpong/Atomic_Bomb-Sound_Explorer-897730679.wav");
         }
 //</editor-fold>
 
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            ball.setVelocity(new Velocity(5, 2));
+            ball.setVelocity(new Velocity(10, 8));
         }
     }
 
@@ -269,19 +284,13 @@ class Arena extends Environment {
 
     @Override
     public void paintEnvironment(Graphics graphics) {
+//<editor-fold defaultstate="collapsed" desc="draw players">
 
-//        graphics.setColor(Color.blue);
-//        graphics.fillRect(130, 175, 60, 320);
-//
-//        graphics.setColor(Color.red);
-//        graphics.fillRect(1710, 175, 60, 320);
-//        graphics.setColor(new Color(89, 189, 255, 40));
-//        graphics.fillRect(MIN_X, MIN_Y, MAX_X - MIN_X, MAX_Y - MIN_Y);
+        if (playerone != null) {
+            playerone.draw(graphics);
+        }
         if (ball != null) {
             ball.draw(graphics);
-        }
-        
-        if (coin != null) {
         }
 
         if (paddleOne != null) {
@@ -291,21 +300,16 @@ class Arena extends Environment {
         if (paddleTwo != null) {
             paddleTwo.draw(graphics);
         }
+//</editor-fold>
 
         //draw playing surface
+//<editor-fold defaultstate="collapsed" desc="arena boundaries">
         graphics.setColor(Color.magenta);
         graphics.drawRect(BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_WIDTH, BOUNDARY_HEIGHT);
 
         graphics.setColor(Color.yellow);
         graphics.drawRect(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_WIDTH - (2 * PADDLE_REGION_WIDTH), BOUNDARY_HEIGHT);
-
-        if (grid != null) {
-            grid.paintComponent(graphics);
-        }
-
-        if (playerone != null) {
-            playerone.draw(graphics);
-        }
+//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="playerone hitbox">
         if (playerone.getHitBox() != null) {
@@ -357,5 +361,8 @@ class Arena extends Environment {
 //    public int getCellHeight() {
 //        return grid.getCellHeight();
 //    }
+//    if (grid != null) {
+//            grid.paintComponent(graphics);
+//        }
 //</editor-fold>
 }

@@ -29,30 +29,36 @@ public class Ball {
     }
 
     public void draw(Graphics graphics) {
-        graphics.setColor(Color.magenta);
+        graphics.setColor(Color.WHITE);
         graphics.fillOval(getX(), getY(), getWidth(), height);
     }
 
-    private int speed = 15;
+    private int speed = 1000;
 
+//<editor-fold defaultstate="collapsed" desc="movement">
     public void move() {
         x += velocity.x;
         y += velocity.y;
-
+        
         if (y <= minY) {
             y = minY;
             velocity.y *= -1;
+            
         }
         if (y + height >= maxY) {
             y = maxY - height;
             velocity.y *= -1;
+            
         }
-
+        
     }
-
+//</editor-fold>
+    
+//<editor-fold defaultstate="collapsed" desc="hitbox">
     public Rectangle getHitBox() {
         return new Rectangle(x, y, getWidth(), height);
     }
+//</editor-fold>
 
 //<editor-fold defaultstate="collapsed" desc="properties">
     private int x, y;
@@ -117,19 +123,18 @@ public class Ball {
         this.velocity = velocity;
     }
 //</editor-fold>
-
-    /**
-     * @return the width
-     */
+   
+//<editor-fold defaultstate="collapsed" desc="getter n setter">
     public int getWidth() {
         return width;
     }
-
+    
     /**
      * @param width the width to set
      */
     public void setWidth(int width) {
         this.width = width;
     }
+//</editor-fold>
 
 }

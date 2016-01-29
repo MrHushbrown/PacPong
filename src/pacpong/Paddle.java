@@ -17,14 +17,14 @@ import java.util.ArrayList;
  * @author asus pc
  */
 public class Paddle {
-
+    
     public Paddle(Direction direction) {
         this.direction = direction;
     }
-
+    
     private Direction direction = Direction.RIGHT;
     private Color color = Color.BLUE;
-
+    
     public Paddle(int x, int y, int width, int height, Color color, int minY, int maxY) {
         this.x = x;
         this.y = y;
@@ -33,16 +33,17 @@ public class Paddle {
         this.color = color;
         this.minY = minY;
         this.maxY = maxY;
-
+        
     }
-
+    
     public void draw(Graphics graphics) {
         graphics.setColor(color);
         graphics.fill3DRect(getX(), getY(), width, height, true);
     }
-
+    
     int speed = 12;
 
+//<editor-fold defaultstate="collapsed" desc="movement">
     public void move() {
         if (getDirection() == Direction.DOWN) {
             setY(getY() + speed);
@@ -51,8 +52,7 @@ public class Paddle {
         }
         if (getY() < minY) {
             setY(minY);
-        }
-        else if (getY() + height > maxY) {
+        } else if (getY() + height > maxY) {
             setY(maxY - height);
         }
     }
@@ -60,30 +60,24 @@ public class Paddle {
     public void stop() {
         this.speed = 0;
     }
-
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="health">
     public int getHealth() {
         return health;
     }
-
-    /**
-     * @param Health the Health to set
-     */
+    
     public void setHealth(int Health) {
         this.health = Health;
     }
-
+    
     public boolean isAlive() {
         return (health > 0);
     }
-
+    
     public boolean isDead() {
         return (health <= 0);
     }
-    
-    public Rectangle getHitBox() {
-        return new Rectangle(getX(), getY(), width, height);
-    }
-
+//</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
     private int y;
@@ -92,19 +86,17 @@ public class Paddle {
     private int health;
     private int minY;
     private int maxY;
-
+    
     private Direction getDirection() {
         return direction;
     }
-
+    
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 //</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="getters n setters">
 
-    /**
-     * @return the x
-     */
     public int getX() {
         return x;
     }
@@ -137,4 +129,11 @@ public class Paddle {
     public int getRightX() {
         return x + width;
     }
+//</editor-fold>
+//<editor-fold defaultstate="collapsed" desc="hitbox">
+
+    public Rectangle getHitBox() {
+        return new Rectangle(getX(), getY(), width, height);
+    }
+//</editor-fold>
 }
