@@ -8,16 +8,16 @@ package pacpong;
 import environment.Velocity;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Rectangle;
 
 /**
  *
  * @author asus pc
  */
-
-
 public class Ball {
-    public Ball (int x, int y, int radius, int minX, int maxX, int minY, int maxY) {
-        this.x = x; 
+
+    public Ball(int x, int y, int radius, int minX, int maxX, int minY, int maxY) {
+        this.x = x;
         this.y = y;
         this.width = radius;
         this.height = radius;
@@ -27,19 +27,18 @@ public class Ball {
         this.maxY = maxY;
         velocity = new Velocity(0, 0);
     }
-    
-    
-    public void draw (Graphics graphics) {
+
+    public void draw(Graphics graphics) {
         graphics.setColor(Color.magenta);
-        graphics.fillOval(getX(), getY(), width, height);
+        graphics.fillOval(getX(), getY(), getWidth(), height);
     }
-    
+
     private int speed = 15;
-    
-    public void move () {
+
+    public void move() {
         x += velocity.x;
         y += velocity.y;
-        
+
         if (y <= minY) {
             y = minY;
             velocity.y *= -1;
@@ -49,32 +48,18 @@ public class Ball {
             velocity.y *= -1;
         }
 
-
-//        if (x < minX) {
-//                x = minX;
-//                kill();
-//            } else if (x > maxX) {
-//                x = maxX - 27;
-//                kill();}
-//                if (y < minY) {
-//                    y = minY;
-//                    kill();
-//                }
-//                if (y > maxY) {
-//                    y = maxY;
-//                    kill();
-//                }
-
     }
-    
-  
+
+    public Rectangle getHitBox() {
+        return new Rectangle(x, y, getWidth(), height);
+    }
+
 //<editor-fold defaultstate="collapsed" desc="properties">
-    
     private int x, y;
     private int width, height;
     private int minX, maxX;
     private int minY, maxY;
-    private Velocity velocity; 
+    private Velocity velocity;
 
     /**
      * @return the speed
@@ -132,5 +117,19 @@ public class Ball {
         this.velocity = velocity;
     }
 //</editor-fold>
-    
+
+    /**
+     * @return the width
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @param width the width to set
+     */
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
 }

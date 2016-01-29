@@ -198,4 +198,5 @@ public class Pacman {
     public boolean isDead() {
         return (health <= 0);
     }
+    
 }

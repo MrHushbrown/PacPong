@@ -9,6 +9,7 @@ import grid.Grid;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 /**
@@ -37,22 +38,22 @@ public class Paddle {
 
     public void draw(Graphics graphics) {
         graphics.setColor(color);
-        graphics.fill3DRect(x, y, width, height, true);
+        graphics.fill3DRect(getX(), getY(), width, height, true);
     }
 
     int speed = 12;
 
     public void move() {
         if (getDirection() == Direction.DOWN) {
-            y += speed;
+            setY(getY() + speed);
         } else if (getDirection() == Direction.UP) {
-            y -= speed;
+            setY(getY() - speed);
         }
-        if (y < minY) {
-            y = minY;
+        if (getY() < minY) {
+            setY(minY);
         }
-        else if (y + height > maxY) {
-            y = maxY - height;
+        else if (getY() + height > maxY) {
+            setY(maxY - height);
         }
     }
 
@@ -78,6 +79,10 @@ public class Paddle {
     public boolean isDead() {
         return (health <= 0);
     }
+    
+    public Rectangle getHitBox() {
+        return new Rectangle(getX(), getY(), width, height);
+    }
 
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
@@ -96,4 +101,40 @@ public class Paddle {
         this.direction = direction;
     }
 //</editor-fold>
+
+    /**
+     * @return the x
+     */
+    public int getX() {
+        return x;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    /**
+     * @return the y
+     */
+    public int getY() {
+        return y;
+    }
+
+    /**
+     * @param y the y to set
+     */
+    public void setY(int y) {
+        this.y = y;
+    }
+    
+    public int getLeftX() {
+        return x;
+    }
+    
+    public int getRightX() {
+        return x + width;
+    }
 }

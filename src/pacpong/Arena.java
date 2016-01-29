@@ -8,12 +8,12 @@
 //get paddles moving and respect boundaries**
 //  change pacman mouth direction**
 //get ball moving
-//        -bounce off paddles using trig class
+//        -bounce off paddles using trig class**
 //        -collide with pacman to kill him        
 //// "raindrop class" code for items and powerups
 //          -effects of powerups (can be reduced if needed for time)
 //          -nuke ends game
-//game over screen
+//game over/start screen
 //          -restart game
 //          -maybe start and loading screen
 //        
@@ -48,7 +48,7 @@ class Arena extends Environment {
     private int scoreone;
     private int scoretwo;
     private int time;
-    private Ball fred;
+    private Ball ball;
 
     private int width = 80;
     private int widthChange = -1;
@@ -77,7 +77,7 @@ class Arena extends Environment {
 
 //        paddleOne = new Paddle(Direction.DOWN);
         playerone = getPacman();
-        fred = new Ball(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 35, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
+        ball = new Ball(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 35, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
 //<editor-fold defaultstate="collapsed" desc="items">
 
 //        items = new ArrayList<>();
@@ -175,9 +175,33 @@ class Arena extends Environment {
 //        }
 //</editor-fold>
         
-        if (fred != null) {
-            fred.move();
+        if (ball != null) {
+            ball.move();
+            
+            if (ball.getHitBox().intersects(paddleOne.getHitBox())) {
+                ball.getVelocity().x *= -1;
+                ball.setX(paddleOne.getRightX());
+            }
+            
+            if (ball.getHitBox().intersects(paddleTwo.getHitBox())) {
+                ball.getVelocity().x *= -1;
+                ball.setX(paddleTwo.getLeftX() - ball.getWidth());
+            }
+            
+            if (ball.getX() <= BOUNDARY_LEFT) {
+               scoretwo++;
+               ball.setX(BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH - ball.getWidth());
+               ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
+               ball.setVelocity(new Velocity(-3, -5));
+            } else if (ball.getX() >= BOUNDARY_LEFT + BOUNDARY_WIDTH - ball.getWidth()) {
+               scoreone++;
+               ball.setX(BOUNDARY_LEFT + PADDLE_REGION_WIDTH);
+               ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
+               ball.setVelocity(new Velocity(3, -2));
+            } 
         }
+        
+        
     }
 
     private void checkIntersection() {
@@ -223,7 +247,7 @@ class Arena extends Environment {
         }
         //<editor-fold defaultstate="collapsed" desc="Sounds">
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            AudioPlayer.play("/pacpong/BOMB_SIREN-BOMB_SIREN-247265934.wav");
+            AudioPlayer.play("/pacpong/bomb_siren.wav");
         }
         if (e.getKeyCode() == KeyEvent.VK_T) {
             AudioPlayer.play("/pacpong/Atomic_Bomb-Sound_Explorer-897730679.wav");
@@ -231,7 +255,7 @@ class Arena extends Environment {
 //</editor-fold>
 
         if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-            fred.setVelocity(new Velocity(5, 2));
+            ball.setVelocity(new Velocity(5, 2));
         }
     }
 
@@ -253,8 +277,8 @@ class Arena extends Environment {
 //        graphics.fillRect(1710, 175, 60, 320);
 //        graphics.setColor(new Color(89, 189, 255, 40));
 //        graphics.fillRect(MIN_X, MIN_Y, MAX_X - MIN_X, MAX_Y - MIN_Y);
-        if (fred != null) {
-            fred.draw(graphics);
+        if (ball != null) {
+            ball.draw(graphics);
         }
         
         if (coin != null) {
@@ -293,16 +317,16 @@ class Arena extends Environment {
         //<editor-fold defaultstate="collapsed" desc="score">
         graphics.setColor(Color.blue);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
-        graphics.drawString("Score " + scoreone, 100, 100);
+        graphics.drawString("Score " + scoreone, BOUNDARY_LEFT, 90);
 
         graphics.setColor(Color.red);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
-        graphics.drawString("Score " + scoretwo, 1700, 100);
+        graphics.drawString("Score " + scoretwo, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, 90);
 //</editor-fold>
         //<editor-fold defaultstate="collapsed" desc="timer">
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
-        graphics.drawString("Time: " + time, 850, 100);
+        graphics.drawString("Time: " + time, BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), 90);
 //</editor-fold>
         if (items != null) {
             for (Item item : items) {
