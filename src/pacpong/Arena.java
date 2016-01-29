@@ -6,6 +6,7 @@
 //todo
 //fix screen**
 //get paddles moving and respect boundaries**
+//  change pacman mouth direction**
 //get ball moving
 //        -bounce off paddles using trig class
 //        -collide with pacman to kill him        
@@ -16,13 +17,11 @@
 //          -restart game
 //          -maybe start and loading screen
 //        
-
-
-
 package pacpong;
 
 import audio.AudioPlayer;
 import environment.Environment;
+import environment.Velocity;
 import grid.Grid;
 import images.ResourceTools;
 import java.awt.Color;
@@ -49,6 +48,7 @@ class Arena extends Environment {
     private int scoreone;
     private int scoretwo;
     private int time;
+    private Ball fred;
 
     private int width = 80;
     private int widthChange = -1;
@@ -57,12 +57,12 @@ class Arena extends Environment {
     private static final int MAX_X = 1500;
     private static final int MIN_Y = 150;
     private static final int MAX_Y = 850;
-    
+
     private static final int BOUNDARY_TOP = 100;
     private static final int BOUNDARY_LEFT = 50;
     private static final int BOUNDARY_HEIGHT = 650;
     private static final int BOUNDARY_WIDTH = 1450;
-    
+
     private static final int PADDLE_REGION_WIDTH = 125;
 
     private Image coin;
@@ -72,11 +72,12 @@ class Arena extends Environment {
 //        this.setBackground(ResourceTools.loadImageFromResource(TOOL_TIP_TEXT_KEY))
 
         paddleOne = new Paddle(BOUNDARY_LEFT + (PADDLE_REGION_WIDTH / 2), BOUNDARY_HEIGHT / 4, PADDLE_REGION_WIDTH / 4, BOUNDARY_HEIGHT / 8, Color.BLUE, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
-        paddleTwo = new Paddle(BOUNDARY_LEFT +BOUNDARY_WIDTH - (PADDLE_REGION_WIDTH * 3 / 4), BOUNDARY_HEIGHT / 4, PADDLE_REGION_WIDTH / 4, BOUNDARY_HEIGHT / 8, Color.RED, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
+        paddleTwo = new Paddle(BOUNDARY_LEFT + BOUNDARY_WIDTH - (PADDLE_REGION_WIDTH * 3 / 4), BOUNDARY_HEIGHT / 4, PADDLE_REGION_WIDTH / 4, BOUNDARY_HEIGHT / 8, Color.RED, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
         playerone = new Pacman(Direction.RIGHT);
 
 //        paddleOne = new Paddle(Direction.DOWN);
-        playerone = new Pacman(BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 30, 30, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
+        playerone = getPacman();
+        fred = new Ball(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 35, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
 //<editor-fold defaultstate="collapsed" desc="items">
 
 //        items = new ArrayList<>();
@@ -100,18 +101,21 @@ class Arena extends Environment {
 //        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
 //        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
 //</editor-fold>
+    }
 
+    private Pacman getPacman() {
+        return new Pacman(BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 30, 30, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
     }
 
     @Override
     public void initializeEnvironment() {
     }
-    
+
     int moveDelayPlayerOne = 0;
     int moveDelayPaddle01 = 0;
     int moveDelayPaddle02 = 0;
     int moveDelayLimit = 2;
-    
+
     int counter;
 
     @Override
@@ -153,21 +157,27 @@ class Arena extends Environment {
 //<editor-fold defaultstate="collapsed" desc="Pacman animation">
         if (playerone != null) {
             if (playerone.isDead()) {
-                playerone.setMouthWidth(width = 0);
+                playerone.setMouthWidth(width = 45);
+            } else {
+                if (width <= 0) {
+                    widthChange = +17;
+                } else if (width >= 80) {
+                    widthChange = -17;
+                }
+                
+                width = width + widthChange;
+                playerone.setMouthWidth(width);
             }
-            if (width <= 0) {
-                widthChange = +17;
-            } else if (width >= 80) {
-                widthChange = -17;
-            }
-            width = width + widthChange;
-            playerone.setMouthWidth(width);
 
         }
-        if (playerone != null) {
-            playerone.setMouthWidth(width);
-        }
+//        if (playerone != null) {
+//            playerone.setMouthWidth(width);
+//        }
 //</editor-fold>
+        
+        if (fred != null) {
+            fred.move();
+        }
     }
 
     private void checkIntersection() {
@@ -198,7 +208,7 @@ class Arena extends Environment {
         }
         if (e.getKeyCode() == KeyEvent.VK_R) {
             if (playerone.isDead()) {
-                playerone = new Pacman(900, 450, 30, 30, MIN_X, MAX_X, MIN_Y, MAX_Y);
+                playerone = getPacman();
             }
         }
 //</editor-fold>
@@ -220,6 +230,9 @@ class Arena extends Environment {
         }
 //</editor-fold>
 
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            fred.setVelocity(new Velocity(5, 2));
+        }
     }
 
     @Override
@@ -240,6 +253,10 @@ class Arena extends Environment {
 //        graphics.fillRect(1710, 175, 60, 320);
 //        graphics.setColor(new Color(89, 189, 255, 40));
 //        graphics.fillRect(MIN_X, MIN_Y, MAX_X - MIN_X, MAX_Y - MIN_Y);
+        if (fred != null) {
+            fred.draw(graphics);
+        }
+        
         if (coin != null) {
         }
 
@@ -250,10 +267,8 @@ class Arena extends Environment {
         if (paddleTwo != null) {
             paddleTwo.draw(graphics);
         }
-        
-        //draw playing surface
-        
 
+        //draw playing surface
         graphics.setColor(Color.magenta);
         graphics.drawRect(BOUNDARY_LEFT, BOUNDARY_TOP, BOUNDARY_WIDTH, BOUNDARY_HEIGHT);
 

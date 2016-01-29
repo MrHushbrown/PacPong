@@ -62,8 +62,20 @@ public class Pacman {
     public void draw(Graphics graphics) {
 
 //        start drawing here
+        int baseAngle = 0;
+        if (direction == Direction.RIGHT) {
+            baseAngle = 0;
+        } else if (direction == Direction.UP) {
+            baseAngle = 90;
+        } else if (direction == Direction.LEFT) {
+            baseAngle = 180;
+        } else if (direction == Direction.DOWN) {
+            baseAngle = 270;
+        } 
+        
+        
         graphics.setColor(color);
-        graphics.fillArc(x, y, width, height, mouthWidth / 2, 360 - (mouthWidth));
+        graphics.fillArc(x, y, width, height, baseAngle + (mouthWidth / 2), 360 - (mouthWidth));
         
         graphics.setColor(color.MAGENTA);
         graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
