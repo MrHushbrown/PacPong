@@ -34,7 +34,7 @@ public class PowerUpItem extends Item {
             type = POWERUPBOX_POWERUP_ITEM;
         } else if (rand < .3) {
             type = SNOWFLAKE_POWERUP_ITEM;
-        } else if (rand < .3) {
+        } else if (rand < .4) {
             type = TACTICALNUKE_POWERUP_ITEM;
         }
         

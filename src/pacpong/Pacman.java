@@ -72,7 +72,7 @@ public class Pacman {
         
         
         graphics.setColor(color);
-        graphics.fillArc(x, y, width, height, baseAngle + (mouthWidth / 2), 360 - (mouthWidth));
+        graphics.fillArc(x, y, getWidth(), height, baseAngle + (mouthWidth / 2), 360 - (mouthWidth));
         
         graphics.setColor(color.MAGENTA);
         graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
@@ -81,27 +81,27 @@ public class Pacman {
 //        graphics.drawRect(getHitBox().x, getHitBox().y, getHitBox().width, getHitBox().height);
     }
 
-    double speed = 11.25;
+    private double speed = 11.25;
 
 //<editor-fold defaultstate="collapsed" desc="movement">
     public void move() {
         
         if (isAlive()) {
             if (getDirection() == Direction.LEFT) {
-                x -= speed;
+                x -= getSpeed();
             } else if (getDirection() == Direction.RIGHT) {
-                x += speed;
+                x += getSpeed();
             } else if (getDirection() == Direction.DOWN) {
-                y += speed;
+                y += getSpeed();
             } else if (getDirection() == Direction.UP) {
-                y -= speed;
+                y -= getSpeed();
             }
             
             if (x < minX) {
                 x = minX;
                 kill();
-            } else if (x > maxX - width) {
-                x = maxX - width;
+            } else if (x > maxX - getWidth()) {
+                x = maxX - getWidth();
                 kill();}
             if (y < minY) {
                 y = minY;
@@ -118,7 +118,7 @@ public class Pacman {
     
 //<editor-fold defaultstate="collapsed" desc="hitbox">
     public Rectangle getHitBox() {
-        return new Rectangle(x + (width / 4), y + (height / 4), width / 2, height / 2);
+        return new Rectangle(x + (getWidth() / 4), y + (height / 4), getWidth() / 2, height / 2);
     }
 //</editor-fold>
     
@@ -127,33 +127,37 @@ public class Pacman {
         return mouthWidth;
     }
     
-    /**
-     * @param mouthWidth the mouthWidth to set
-     */
     public void setMouthWidth(int mouthWidth) {
         this.mouthWidth = mouthWidth;
     }
     
-    /**
-     * @return the direction
-     */
     public Direction getDirection() {
         return direction;
     }
     
-    /**
-     * @param direction the direction to set
-     */
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
     
-    /**
-     * @param BodyColor the BodyColor to set
-     */
     public void setBodyColor(Color BodyColor) {
         this.BodyColor = BodyColor;
     }
+        public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public double getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+    
 //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="health">
@@ -163,7 +167,7 @@ public class Pacman {
     
      public void kill() {
         this.health = 0;
-        color = Color.GRAY;
+        color = Color.DARK_GRAY;
     }
 
     public void setHealth(int Health) {
@@ -182,5 +186,9 @@ public class Pacman {
         return (health <= 0);
     }
 //</editor-fold>
-    
+
+    /**
+     * @return the width
+     */
+
 }

@@ -3,13 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/FoodItem.java</file>
             <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Paddle.java</file>
             <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Arena.java</file>
-            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Direction.java</file>
             <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Pacman.java</file>
+            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Item.java</file>
             <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Ball.java</file>
-            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/Barrier.java</file>
-            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/CellDataProviderIntf.java</file>
+            <file>file:/C:/Users/asus%20pc/Documents/PacPong/src/pacpong/PowerUpItem.java</file>
         </group>
     </open-files>
 </project-private>

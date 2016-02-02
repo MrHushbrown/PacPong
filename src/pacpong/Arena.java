@@ -11,13 +11,14 @@
 //        -bounce off paddles using trig class**
 //        -collide with pacman to kill him**     
 //        -pacman moves faster moving left and up
+//        -add sound effects 
 // "raindrop class" code for items and powerups
 //            -how to randomize and trigger powerups,hitbox?
 //            -how to make custom colors
 //            -how to make ice effect on screen
 //            -effects of powerups (can be reduced if needed for time)
 //            -nuke ends game
-//              -randomize angles for ball when bouncing off edges
+//              -randomize angles for ball when bouncing off edges       
 //game over/start screen
 //          -restart game
 //          -maybe start and loading screen
@@ -82,35 +83,36 @@ class Arena extends Environment {
         playerone = getPacman();
         ball = new Ball(BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 35, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
 
-       
+        //<editor-fold defaultstate="collapsed" desc="items">
+        items = new ArrayList<>();
+        items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
+        items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
+        items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
 
-//<editor-fold defaultstate="collapsed" desc="items">
-//        items = new ArrayList<>();
-//        items.add(FoodItem.getRandomFoodItem(420, 175, 50, 50));
-//        items.add(FoodItem.getRandomFoodItem(520, 175, 50, 50));
-//        items.add(FoodItem.getRandomFoodItem(620, 175, 50, 50));
-//        
-//        items.add(FoodItem.getFoodItem(420, 250, 50, 50, FoodItem.BEER_FOOD_ITEM));
-//        items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
-//        items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
-//        items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
-//        
-//        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
-//        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
-//        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
-//        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
-//        
-//        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
-//        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
-//        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
-//        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
-//        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
+//        items.add(FoodItem.getFoodItem(randomInt(int min, int max), randomInt(int min, int max), 50, 50, FoodItem.BEER_FOOD_ITEM));
+        items.add(FoodItem.getFoodItem(520, 250, 50, 50, FoodItem.BURGER_FOOD_ITEM));
+        items.add(FoodItem.getFoodItem(620, 250, 50, 50, FoodItem.CHICKEN_FOOD_ITEM));
+        items.add(FoodItem.getFoodItem(720, 250, 50, 50, FoodItem.COKE_FOOD_ITEM));
+
+        items.add(PowerUpItem.getRandomPowerUpItem(420, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(520, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(620, 325, 50, 50));
+        items.add(PowerUpItem.getRandomPowerUpItem(720, 325, 50, 50));
+
+        items.add(PowerUpItem.getPowerUpItem(420, 400, 50, 50, PowerUpItem.COIN_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(520, 400, 50, 50, PowerUpItem.FLASH_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(620, 400, 50, 50, PowerUpItem.POWERUPBOX_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(720, 400, 50, 50, PowerUpItem.SNOWFLAKE_POWERUP_ITEM));
+        items.add(PowerUpItem.getPowerUpItem(820, 400, 50, 50, PowerUpItem.TACTICALNUKE_POWERUP_ITEM));
 //</editor-fold>
-
     }
 
     private Pacman getPacman() {
         return new Pacman(BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2), 30, 30, BOUNDARY_LEFT + PADDLE_REGION_WIDTH, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, BOUNDARY_TOP, BOUNDARY_TOP + BOUNDARY_HEIGHT);
+    }
+
+    public int randomInt(int min, int max) {
+        return (int) (min + (Math.random() * (max - min)));
     }
 
     @Override
@@ -131,6 +133,7 @@ class Arena extends Environment {
             if (moveDelayPlayerOne >= moveDelayLimit) {
                 moveDelayPlayerOne = moveDelayLimit;
                 playerone.move();
+                checkIntersection();
             } else {
 
                 moveDelayPlayerOne++;
@@ -189,12 +192,15 @@ class Arena extends Environment {
                 ball.getVelocity().x *= -1;
                 ball.setX(paddleOne.getRightX());
                 ball.getVelocity().x++;
+                AudioPlayer.play("/pacpong/Hockey Stick Slap.wav");
             }
 
             if (ball.getHitBox().intersects(paddleTwo.getHitBox())) {
                 ball.getVelocity().x *= -1;
                 ball.setX(paddleTwo.getLeftX() - ball.getWidth());
                 ball.getVelocity().x++;
+                AudioPlayer.play("/pacpong/Hockey Stick Slap.wav");
+
             }
 
             if (ball.getX() <= BOUNDARY_LEFT) {
@@ -202,15 +208,21 @@ class Arena extends Environment {
                 ball.setX(BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH - ball.getWidth());
                 ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
                 ball.setVelocity(new Velocity(-10, -7));
+                AudioPlayer.play("/pacpong/Cheering.wav");
+
             } else if (ball.getX() >= BOUNDARY_LEFT + BOUNDARY_WIDTH - ball.getWidth()) {
                 scoreone++;
                 ball.setX(BOUNDARY_LEFT + PADDLE_REGION_WIDTH);
                 ball.setY(BOUNDARY_TOP + (BOUNDARY_HEIGHT / 2));
                 ball.setVelocity(new Velocity(10, -3));
+                AudioPlayer.play("/pacpong/Cheering.wav");
+
             }
-            
-            if (ball.getHitBox().intersects(playerone.getHitBox())){
+
+            if (ball.getHitBox().intersects(playerone.getHitBox())) {
                 playerone.kill();
+                AudioPlayer.play("/pacpong/Jab.wav");
+
             }
         }
 
@@ -218,9 +230,14 @@ class Arena extends Environment {
     }
 
     private void checkIntersection() {
-        if (items != null) {
+        if ((items != null) && (playerone != null)) {
             for (Item item : items) {
                 if (item.getHitBox().intersects(playerone.getHitBox())) {
+//                    item.setType(FoodItem.getRandomFoodItem(time, time, width, time));
+//                    item.setX((int) Math.random() * BOUNDARY_LEFT + PADDLE_REGION_WIDTH + 50);
+                    item.setX(randomInt(BOUNDARY_LEFT + PADDLE_REGION_WIDTH + 50, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH - 50));
+                    item.setY(randomInt(BOUNDARY_TOP + 25, BOUNDARY_TOP + BOUNDARY_HEIGHT - 50));
+                    AudioPlayer.play("/pacpong/Apple_Bite.wav");
 
                 }
             }
@@ -249,6 +266,7 @@ class Arena extends Environment {
             }
         }
 //</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="paddle controls">
         if (e.getKeyCode() == KeyEvent.VK_A) {
             paddleOne.setDirection(Direction.UP);
@@ -260,11 +278,12 @@ class Arena extends Environment {
             paddleTwo.setDirection(Direction.DOWN);
         }
 //</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="Sounds">
 //        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 //            AudioPlayer.play("/pacpong/bomb_siren.wav");
 //        }
-        if (e.getKeyCode() == KeyEvent.VK_T) {
+        if (e.getKeyCode() == KeyEvent.VK_Y) {
             AudioPlayer.play("/pacpong/Atomic_Bomb-Sound_Explorer-897730679.wav");
         }
 //</editor-fold>
@@ -276,6 +295,17 @@ class Arena extends Environment {
 
     @Override
     public void keyReleasedHandler(KeyEvent e) {
+//<editor-fold defaultstate="collapsed" desc="paddle controls II">
+        if (e.getKeyCode() == KeyEvent.VK_A) {
+            paddleOne.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_Z) {
+            paddleOne.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_K) {
+            paddleTwo.setDirection(Direction.RIGHT);
+        } else if (e.getKeyCode() == KeyEvent.VK_M) {
+            paddleTwo.setDirection(Direction.RIGHT);
+        }
+//</editor-fold>
     }
 
     @Override
@@ -318,7 +348,8 @@ class Arena extends Environment {
 
         }
 //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="score">
+
+//<editor-fold defaultstate="collapsed" desc="Score">
         graphics.setColor(Color.blue);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
         graphics.drawString("Score " + scoreone, BOUNDARY_LEFT, 90);
@@ -327,11 +358,13 @@ class Arena extends Environment {
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
         graphics.drawString("Score " + scoretwo, BOUNDARY_LEFT + BOUNDARY_WIDTH - PADDLE_REGION_WIDTH, 90);
 //</editor-fold>
-        //<editor-fold defaultstate="collapsed" desc="timer">
+
+//<editor-fold defaultstate="collapsed" desc="timer">
         graphics.setColor(Color.white);
         graphics.setFont(new Font("Calibri", Font.ITALIC, 35));
-        graphics.drawString("Time: " + time, BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2), 90);
+        graphics.drawString("Time: " + time, BOUNDARY_LEFT + (BOUNDARY_WIDTH / 2) - 100, 90);
 //</editor-fold>
+
         if (items != null) {
             for (Item item : items) {
                 item.draw(graphics);

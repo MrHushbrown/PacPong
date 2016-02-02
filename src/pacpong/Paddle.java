@@ -5,6 +5,7 @@
  */
 package pacpong;
 
+import environment.Velocity;
 import grid.Grid;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -17,14 +18,14 @@ import java.util.ArrayList;
  * @author asus pc
  */
 public class Paddle {
-    
+
     public Paddle(Direction direction) {
         this.direction = direction;
     }
-    
+
     private Direction direction = Direction.RIGHT;
     private Color color = Color.BLUE;
-    
+
     public Paddle(int x, int y, int width, int height, Color color, int minY, int maxY) {
         this.x = x;
         this.y = y;
@@ -33,14 +34,14 @@ public class Paddle {
         this.color = color;
         this.minY = minY;
         this.maxY = maxY;
-        
+
     }
-    
+
     public void draw(Graphics graphics) {
         graphics.setColor(color);
         graphics.fill3DRect(getX(), getY(), width, height, true);
     }
-    
+
     int speed = 12;
 
 //<editor-fold defaultstate="collapsed" desc="movement">
@@ -61,23 +62,30 @@ public class Paddle {
         this.speed = 0;
     }
 //</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="health">
     public int getHealth() {
         return health;
     }
-    
+
     public void setHealth(int Health) {
         this.health = Health;
     }
-    
+
     public boolean isAlive() {
         return (health > 0);
     }
-    
+
     public boolean isDead() {
         return (health <= 0);
     }
+
+    public void kill() {
+        this.health = 0;
+        color = Color.darkGray;
+    }
 //</editor-fold>
+
 //<editor-fold defaultstate="collapsed" desc="Properties">
     private int x;
     private int y;
@@ -86,17 +94,17 @@ public class Paddle {
     private int health;
     private int minY;
     private int maxY;
-    
+
     private Direction getDirection() {
         return direction;
     }
-    
+
     public void setDirection(Direction direction) {
         this.direction = direction;
     }
 //</editor-fold>
-//<editor-fold defaultstate="collapsed" desc="getters n setters">
 
+//<editor-fold defaultstate="collapsed" desc="getters n setters">
     public int getX() {
         return x;
     }
@@ -121,17 +129,17 @@ public class Paddle {
     public void setY(int y) {
         this.y = y;
     }
-    
+
     public int getLeftX() {
         return x;
     }
-    
+
     public int getRightX() {
         return x + width;
     }
 //</editor-fold>
-//<editor-fold defaultstate="collapsed" desc="hitbox">
 
+//<editor-fold defaultstate="collapsed" desc="hitbox">
     public Rectangle getHitBox() {
         return new Rectangle(getX(), getY(), width, height);
     }
